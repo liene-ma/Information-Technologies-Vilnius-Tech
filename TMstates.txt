@@ -1,0 +1,42 @@
+;Turing Machine steps
+;Language: L = {a^i b^j a^i : i ≤ 5, j ≤ 3, |a^i b^j a^i | ≤ 6}
+
+;In "a^i b^j a^i : i ≤ 5, j ≤ 3", 
+;there are only two independent variables: i and j. 
+;Thus, "a^i"  at the left of  "a^i b^j a^i" and "a^i" at the right of "a^i b^j a^i" 
+;must be of the same number of letters "a".
+
+;i<=5; j<=3 no longer than 6 
+;----------------------------------------
+;List of strings that must be accepted
+; (1)  "empty string" i=0 && j=0
+; (2)  "aa" i=1 && j=0
+; (3)  "aaaa" i=2 && j=0
+; (4)  "aaaaaa" i=3 && j=0
+; i > 3 is not possible as that will have more than 6 symbols
+
+; (5)  "aba" i=1 && j=1
+; (6)  "abba" i=1 && j=2
+; (7)  "abbba" i=1 && j=3
+; (8)  "aabaa" i=2 && j=1
+; (9)  "aabbaa" i=2 && j=2
+
+; (10) "b" i=0 && j=1
+; (11) "bb" i=0 && j=2
+; (12) "bbb" i=0 && j=3
+
+; ---------------------------------------
+; Rejecting states
+; "a" 1a
+; "aaa" 3a
+; "aaaaa" 5a
+; "aaaaaa..." anything longer than 6, after state (4)
+; "abaa" anything after aba except blank
+; "abab" anything after aba except blank
+; "abbaa" anything after abba except blank
+; "abbab" anything after abba except blank
+; "abbbaa" anything after abbba except blank
+; "abbbab" anything after abbba except blank
+; "aabaaa" anything after aabaa except blank
+; "aabaab" anything after aabaa except blank
+; "bbbb" more than 3 b

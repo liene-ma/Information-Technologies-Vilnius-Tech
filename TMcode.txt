@@ -1,0 +1,96 @@
+;-------------------BEGINNING OF THE PROGRAM CODE----------------------------
+; the first 6 states check if the string is not more than 6 symbols, 
+; and rejects all other symbols than a and b
+0     a   a  R 1
+0     b   b  R 1
+0     *   *  * halt-reject
+0     _   _  L st
+1     a   a  R 2
+1     b   b  R 2
+1     *   *  * halt-reject
+1     _   _  L st
+2     a   a  R 3
+2     b   b  R 3
+2     *   *  * halt-reject
+2     _   _  L st
+3     a   a  R 4
+3     b   b  R 4
+3     *   *  * halt-reject
+3     _   _  L st
+4     a   a  R 5
+4     b   b  R 5
+4     *   *  * halt-reject
+4     _   _  L st
+5     a   a  R 6
+5     b   b  R 6
+5     *   *  * halt-reject
+5     _   _  L st
+6     a   a  * halt-reject
+6     b   b  * halt-reject
+6     *   *  * halt-reject
+6     _   _  L st
+st    a   a  L *
+st    b   b  L *
+st    _   _  R s0
+;-----------------------------------------------------------------------------
+; Accepting states with integrated rejecting states
+; (1)  "empty string" i=0 && j=0
+s0    _   _  * halt-accept
+
+; (2)  "aa" i=1 && j=0; (3)  "aaaa" i=2 && j=0; (4)  "aaaaaa" i=3 && j=0
+s0    a   a  R s1a
+s1a   a   a  R s2a
+s1a   _   _  * halt-reject ; "a" "aaa" "aaaaa" is rejected
+s2a   _   _  * s0
+s2a   a   a  * s3a
+s3a   a   a  * s0
+;-----------------------------------------------------------------------------
+; (10) "b" i=0 && j=1; (11) "bb" i=0 && j=2; (12) "bbb" i=0 && j=3
+s0    b   b  R s1b
+s1b   _   _  * s0
+s1b   a   a  * halt-reject
+s1b   b   b  R s2b
+s2b   a   a  * halt-reject
+s2b   _   _  * s0
+s2b   b   b  R s3b
+s3b   _   _  * s0
+s3b   *   *  * halt-reject
+;-----------------------------------------------------------------------------
+; (5)  "aba" i=1 && j=1
+s1a   b   b  R sab
+sab   _   _  * halt-reject
+sab   a   a  R saba
+saba  _   _  * halt-accept
+saba  *   *  * halt-reject
+;-----------------------------------------------------------------------------
+; (6)  "abba" i=1 && j=2
+sab   b   b  R sab2
+sab2  a   a  R sa2b2
+sab2  _   _  * halt-reject
+sa2b2 _   _  * halt-accept
+sa2b2 *   *  * halt-reject
+sab2  b   b  R sab3
+sab3  _   _  * halt-reject
+;-----------------------------------------------------------------------------
+; (7)  "abbba" i=1 && j=3
+sab3  a   a  R sa2b3
+sab3  b   b  * halt-reject
+sa2b3 _   _  * halt-accept
+sa2b3 *   *  * halt-reject
+;-----------------------------------------------------------------------------
+; (8)  "aabaa" i=2 && j=1
+s2a   b   b  R s2a1b
+s2a1b a   a  R s3a1b
+s2a1b _   _  * halt-reject
+s3a1b a   a  R s4a1b
+s4a1b _   _  * halt-accept
+s4a1b *   *  * halt-reject
+;-----------------------------------------------------------------------------
+; (9)  "aabbaa" i=2 && j=2
+s2a1b b   b  R s2a2b
+s2a2b b   b  * halt-reject
+s2a2b _   _  * halt-reject
+s2a2b a   a  R s3a2b
+s3a2b _   _  * halt-reject
+s3a2b a   a  R s4a2b
+s4a2b _   _  * halt-accept
